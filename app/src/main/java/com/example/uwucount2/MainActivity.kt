@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
@@ -32,12 +34,12 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.text.style.TextAlign
 
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            var countState by remember { mutableStateOf<Double>(0.00) }
-            var marksList = remember { mutableStateListOf<Int>() }
+            var countState: Double by remember { mutableStateOf(0.0) }
+            val marksList = remember { mutableStateListOf<Int>() }
             if (marksList.size == 0) {
                 countState = 0.00
             } else
@@ -52,11 +54,26 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .padding(top = 30.dp)
                     ) {
+                        if (marksList.size==0) {
+                            Text(
+                                text = "UwU",
+                                fontSize = 50.sp,
+                                modifier = Modifier
+                                    .padding(vertical = 40.dp)
+                            )
+                        }
+                        if (marksList.size>0) {
+                            Text(
+                                text = countState.toString(),
+                                fontSize = 50.sp,
+                                modifier = Modifier
+                                    .padding(vertical = 40.dp)
+                            )
+                        }
+
                         Text(
-                            text = countState.toString(),
-                            fontSize = 50.sp,
-                            modifier = Modifier
-                                .padding(vertical = 100.dp)
+                            text = "${marksList.size} marks\n",
+                            fontSize = 25.sp
                         )
                         Text(
                             text = marksList.joinToString("  "),
@@ -64,18 +81,18 @@ class MainActivity : ComponentActivity() {
                             lineHeight = 40.sp,
                             textAlign = TextAlign.Center,
                             modifier = Modifier
-                                .padding(horizontal = 60.dp, vertical = 50.dp)
+                                .padding(horizontal = 60.dp, vertical = 30.dp)
                                 .size(
                                     width = 400.dp,
-                                    height = 230.dp,
+                                    height = 200.dp,
                                 )
+                                .verticalScroll(rememberScrollState())
                         )
-
-//                        Meow(marks=marksList, count=countState)
                         // marks adding buttons
                         LazyRow (
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.Bottom,
+                            modifier = Modifier.weight(1f, true)
                         ) {
                             items(4) { index ->
                                 FB(Mark = index+2, marks=marksList)
@@ -86,7 +103,10 @@ class MainActivity : ComponentActivity() {
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.Bottom,
                             modifier = Modifier
-                                .padding(vertical = 15.dp)
+                                .padding(
+                                    top = 15.dp,
+                                    bottom = 50.dp
+                                )
                         ) {
                             items(2) { index ->
                                 OtherB(marks=marksList, index=index)
@@ -107,8 +127,9 @@ fun FB (
 ) {
     FilledTonalButton(
         onClick = {
-            if (marks.size > 59) {}
-            else marks.add(Mark)
+            if (marks.size <= 199) {
+                marks.add(Mark)
+            }
         },
         modifier = Modifier
             .size(width = 90.dp, height = 60.dp)
